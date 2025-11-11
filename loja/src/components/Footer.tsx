@@ -1,10 +1,15 @@
-// ARQUIVO: src/components/Footer.tsx (NOVO FICHEIRO)
+// ARQUIVO: src/components/Footer.tsx (Atualizado: Layout da Barra Inferior e Espaçamento)
 'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import {
+  PhoneIcon,
+  EnvelopeIcon,
+  MapPinIcon,
+} from '@heroicons/react/24/outline'
 
-// --- Ícones de Social (para consistência com o Header) ---
+// --- Ícones Sociais ---
 const FacebookIcon = () => (
   <svg
     className="h-5 w-5"
@@ -26,72 +31,47 @@ const InstagramIcon = () => (
     viewBox="0 0 24 24"
     aria-hidden="true"
   >
-    <path
-      fillRule="evenodd"
-      d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm0-14c-3.309 0-6 2.691-6 6s2.691 6 6 6 6-2.691 6-6-2.691-6-6-6zm0 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4zm6-10.5c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5z"
-      clipRule="evenodd"
-    />
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.148 3.227-1.667 4.771-4.919 4.919-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.07-1.646-.07-4.85s.012-3.584.07-4.85c.148-3.227 1.667 4.771 4.919-4.919 1.266-.058 1.646.07 4.85.07zM12 0C8.74 0 8.333.015 7.053.072 2.695.272.273 2.69.073 7.052.015 8.333 0 8.74 0 12s.015 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.985 8.74 24 12 24s3.667-.015 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98C23.985 15.667 24 15.26 24 12s-.015-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98C15.667.015 15.26 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z" />
   </svg>
 )
-// (Adicione outros ícones sociais se necessário)
-
-// --- Ícones de Pagamento (Placeholders SVG) ---
-const VisaIcon = () => (
-  <svg className="h-6 w-auto" fill="currentColor" viewBox="0 0 38 12">
-    <path d="M33.606 0H4.394C1.967 0 0 1.96 0 4.38v3.24C0 10.04 1.967 12 4.394 12h29.212C36.033 12 38 10.04 38 7.62V4.38C38 1.96 36.033 0 33.606 0zM22.09 6.295c-.324 1.134-1.39 1.905-2.73 1.905-.73 0-1.42-.23-1.93-.65v.53h-2.18V.91h2.18v1.65c.48-.4 1.14-.63 1.87-.63 1.57 0 2.5 1.05 2.79 2.45h-2zM33.65 6.4c0 .87-.53 1.18-1.19 1.18-.5 0-.96-.15-1.3-.32l-.24-.1v1.6H28.7V.91h2.1v.2c.3-.18.8-.28 1.3-.28.8 0 1.55.4 1.55 1.35V6.4zM12.96 8.01H10.8V.91h2.16v7.1zM9.4 3.73c0-.82-.44-1.14-.95-1.14-.52 0-.94.32-.94 1.14v.8c0 .8.42 1.13.94 1.13.5 0 .95-.33.95-1.13v-.8zM7.5 8.01H5.32V.91h2.18v7.1zM3.48 4.2c0-1.62 1.17-2.3 2.37-2.3.6 0 1.1.2 1.48.42l.33-.36h1.9v2.73c0 .8-.42 1.13-.93 1.13-.52 0-.95-.33-.95-1.13v-1.1c0-.2-.08-.36-.2-.36-.1 0-.2.13-.2.3v1.5c0 1.6-1.16 2.3-2.35 2.3-.6 0-1.1-.2-1.48-.42l-.33.36H2.02V4.5c0-.18.06-.2.14-.2h1.32v-.1z" />
-  </svg>
-)
-const MastercardIcon = () => (
-  <svg className="h-6 w-auto" fill="currentColor" viewBox="0 0 38 24">
-    <path d="M35.15 0H2.85C1.28 0 0 1.28 0 2.85v18.3C0 22.72 1.28 24 2.85 24h32.3C36.72 24 38 22.72 38 21.15V2.85C38 1.28 36.72 0 35.15 0zM12.21 17.68c-2.73 0-4.94-2.2-4.94-4.93s2.2-4.93 4.94-4.93c2.73 0 4.94 2.2 4.94 4.93s-2.2 4.93-4.94 4.93zm13.57 0c-2.73 0-4.94-2.2-4.94-4.93s2.2-4.93 4.94-4.93c2.73 0 4.94 2.2 4.94 4.93s-2.2 4.93-4.94 4.93z" />
-  </svg>
-)
-const PixIcon = () => (
-  <svg className="h-6 w-auto" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M11.72 1.956c-1.92 0-3.692.71-5.11 2.05L2.34 8.283c-.31.304-.31.796 0 1.1l3.32 3.23c.31.304.81.304 1.12 0L10.1 9.4c.54-.53 1.26-.81 2.01-.81.76 0 1.48.28 2.02.81l3.32 3.23c.31.304.81.304 1.12 0l3.32-3.23c.31-.304.31-.796 0-1.1l-4.27-4.276c-1.42-1.34-3.19-2.05-5.11-2.05zm-.19 8.23c-.76 0-1.38.6-1.38 1.35v1.89c0 .75.62 1.35 1.38 1.35.76 0 1.38-.6 1.38-1.35v-1.89c0-.75-.62-1.35-1.38-1.35zM21.66 12.02l-3.32 3.23c-.31.304-.81.304-1.12 0l-3.32-3.23c-.54-.53-1.26-.81-2.02-.81-.75 0-1.47.28-2.01.81l-3.32 3.23c-.31.304-.81.304-1.12 0l-3.32-3.23c-.31-.304-.31-.796 0-1.1l4.27-4.277c1.42-1.34 3.19-2.05 5.11-2.05s3.69.71 5.11 2.05l4.27 4.277c.31.304.31.796 0 1.1zM11.53 15.02c1.92 0 3.69-.71 5.11-2.05l4.27-4.277c.31-.304.31-.796 0-1.1L17.59 3.32c-.31-.304-.81-.304-1.12 0l-3.32 3.23c-.54.53-1.26.81-2.02.81-.75 0-1.47-.28-2.01-.81L5.8 3.32c-.31-.304-.81-.304-1.12 0L.41 7.597c-.31.304-.31.796 0 1.1l4.27 4.277c1.42 1.34 3.19 2.05 5.11 2.05z" />
-  </svg>
-)
-// (Adicione outros ícones de pagamento se necessário)
 
 export default function Footer() {
   // Paleta de cores
   const styles = {
-    background: '#F7F3ED', // Fundo principal
-    bottomBarBg: '#7A4E2D', // Cor de Título para o fundo da barra inferior
-    bottomBarText: '#F7F3ED', // Cor de Fundo para o texto da barra inferior
-    title: '#7A4E2D', // Títulos (MAPA DO SITE)
-    links: '#304D45', // Links (Home, Shop...)
-    socialIcons: '#56362C', // Cor dos ícones (para bater com o Header)
+    background: '#FFF8F4', // Fundo principal
+    title: '#7A4E2D', // Títulos (AJUDA, PRIVACIDADE...)
+    text: '#56362C', // Texto/Links (Somos referência...)
+    buttonBg: '#7A4E2D', // Fundo do botão Newsletter
+    buttonText: '#FFF8F4', // Texto do botão Newsletter
   }
 
+  // Borda subtil (baseada na cor do título)
+  const borderColor = 'rgba(122, 78, 45, 0.2)'
+
   // Listas de Links
-  const siteMapLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'Páginas', href: '/pages' },
-    { name: 'Blog', href: '/blog' },
+  const helpLinks = [
+    { name: 'Rastrear Pedido', href: '/track-order' },
+    { name: 'Dúvidas Frequentes', href: '/faq' },
+    { name: 'Fale Conosco', href: '/contact' },
   ]
 
-  const institutionalLinks = [
-    { name: 'Sobre Nós', href: '/sobre-nos' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'Contato', href: '/contato' },
-    { name: 'Termos e Condições', href: '/termos' },
-  ]
-
-  const policyLinks = [
+  const privacyLinks = [
     { name: 'Política de Privacidade', href: '/privacidade' },
-    { name: 'Política de Reembolso', href: '/reembolso' },
-    { name: 'Política de Envio', href: '/envio' },
+    { name: 'Termos de Uso', href: '/termos' },
+    { name: 'Política de Cookies', href: '/cookies' },
   ]
 
   return (
     <footer style={{ backgroundColor: styles.background }}>
-      {/* --- SECÇÃO 1: PRINCIPAL (NEWSLETTER E LINKS) --- */}
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="flex flex-col lg:flex-row justify-between gap-12">
-          {/* Lado Esquerdo: Logo, Newsletter e Social */}
-          <div className="flex flex-col gap-6 lg:flex-1">
+      {/* --- SECÇÃO 1: PRINCIPAL (5 Colunas com mais espaço) --- */}
+      <div className="mx-auto max-w-7xl px-6 py-32 lg:px-8">
+        {' '}
+        {/* <--- ESPAÇAMENTO VERTICAL AUMENTADO */}
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-5 lg:gap-20">
+          {' '}
+          {/* <--- ESPAÇAMENTO ENTRE COLUNAS AUMENTADO */}
+          {/* Coluna 1: Logo e Texto */}
+          <div className="lg:col-span-1">
             <Link href="/">
               <Image
                 src="/logocajuia.png"
@@ -100,15 +80,92 @@ export default function Footer() {
                 height={40}
               />
             </Link>
-            <p className="text-sm" style={{ color: styles.links }}>
-              Fique por dentro das novidades e receba descontos exclusivos no
-              seu e-mail.
+            <p className="mt-6 text-sm" style={{ color: styles.text }}>
+              Somos referência em elegância e qualidade, oferecendo produtos de
+              luxo com design exclusivo. Com um alto padrão de sofisticação,
+              buscamos sempre superar as expectativas dos nossos clientes,
+              entregando excelência em cada detalhe.
             </p>
-            {/* Formulário Newsletter */}
+          </div>
+          {/* Coluna 2: Ajuda */}
+          <div>
+            <h4
+              className="font-semibold uppercase tracking-wider"
+              style={{ color: styles.title }}
+            >
+              Ajuda
+            </h4>
+            <ul className="mt-4 space-y-3">
+              {helpLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm hover:underline"
+                    style={{ color: styles.text }}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Coluna 3: Privacidade */}
+          <div>
+            <h4
+              className="font-semibold uppercase tracking-wider"
+              style={{ color: styles.title }}
+            >
+              Privacidade
+            </h4>
+            <ul className="mt-4 space-y-3">
+              {privacyLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm hover:underline"
+                    style={{ color: styles.text }}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Coluna 4: Contatos */}
+          <div>
+            <h4
+              className="font-semibold uppercase tracking-wider"
+              style={{ color: styles.title }}
+            >
+              Contatos
+            </h4>
+            <ul className="mt-4 space-y-3" style={{ color: styles.text }}>
+              <li className="flex items-center gap-2 text-sm">
+                <PhoneIcon className="h-4 w-4 flex-shrink-0" />
+                <span>(11) 98765-4321</span>
+              </li>
+              <li className="flex items-center gap-2 text-sm">
+                <EnvelopeIcon className="h-4 w-4 flex-shrink-0" />
+                <span>contato@cajuia.com.br</span>
+              </li>
+              <li className="flex items-start gap-2 text-sm">
+                <MapPinIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                <span>Rua Elegância, 123, São Paulo - SP</span>
+              </li>
+            </ul>
+          </div>
+          {/* Coluna 5: Newsletter */}
+          <div>
+            <h4
+              className="font-semibold uppercase tracking-wider"
+              style={{ color: styles.title }}
+            >
+              Torne-se um cliente ⭐ VIP ⭐
+            </h4>
             <form
               action="#"
               onSubmit={(e) => e.preventDefault()}
-              className="mt-2"
+              className="mt-4"
             >
               <label htmlFor="email-newsletter" className="sr-only">
                 Seu e-mail
@@ -120,115 +177,79 @@ export default function Footer() {
                 className="w-full appearance-none border-b-2 bg-transparent py-2 text-sm focus:outline-none"
                 style={{
                   borderColor: styles.title,
-                  color: styles.links,
+                  color: styles.text,
                 }}
               />
-              {/* Botão de envio pode ser adicionado se necessário */}
+              <button
+                type="submit"
+                className="mt-4 w-full py-2 px-4 text-sm font-medium rounded-md"
+                style={{
+                  backgroundColor: styles.buttonBg,
+                  color: styles.buttonText,
+                }}
+              >
+                Enviar
+              </button>
             </form>
-            {/* Ícones Sociais */}
-            <div className="mt-4 flex gap-4" style={{ color: styles.socialIcons }}>
+          </div>
+        </div>
+      </div>
+
+      {/* --- SECÇÃO 2: BARRA INFERIOR (Layout 3 Colunas) --- */}
+      <div
+        className="border-t" // <--- ADICIONADA BORDA SUPERIOR
+        style={{
+          backgroundColor: styles.background, // <--- FUNDO IGUAL AO RESTANTE
+          borderColor: borderColor, // <--- BORDA SUTIL
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-6 py-6 lg:px-8">
+          {/* Layout de Grelha 3 Colunas (Esquerda, Centro, Direita) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-6">
+            {/* Esquerda: Ícones Sociais */}
+            <div
+              className="flex items-center justify-center sm:justify-start gap-4"
+              style={{ color: styles.text }} // <--- Cor do texto/ícone
+            >
               <a href="#" aria-label="Facebook">
                 <FacebookIcon />
               </a>
               <a href="#" aria-label="Instagram">
                 <InstagramIcon />
               </a>
-              {/* Adicione mais ícones aqui */}
-            </div>
-          </div>
-
-          {/* Lado Direito: Colunas de Links */}
-          <div className="flex gap-12 lg:gap-16">
-            {/* Coluna 1: Mapa do Site */}
-            <div>
-              <h4
-                className="font-semibold uppercase tracking-wider"
-                style={{ color: styles.title }}
-              >
-                Mapa do Site
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {siteMapLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm hover:underline"
-                      style={{ color: styles.links }}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
             </div>
 
-            {/* Coluna 2: Institucional */}
-            <div>
-              <h4
-                className="font-semibold uppercase tracking-wider"
-                style={{ color: styles.title }}
-              >
-                Institucional
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {institutionalLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm hover:underline"
-                      style={{ color: styles.links }}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            {/* Centro: Copyright */}
+            <div className="text-center">
+              <p className="text-sm" style={{ color: styles.text }}>
+                © {new Date().getFullYear()}, Cajuia Brasil. Desenvolvido por{' '}
+                <Link
+                  href="https://www.linkedin.com/in/joão-vitor-correia-37b9a4176"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block font-bold text-shadow-sm transition-all duration-200 hover:scale-105 hover:text-shadow-md"
+                  style={{
+                    textShadow: `
+                      1px 1px 0px rgba(0,0,0,0.1),
+                      -1px -1px 0px rgba(255,255,255,0.1)
+                    `,
+                  }}
+                >
+                  Vitor
+                </Link>
+                . CNPJ: 53.756.096/0001-89.
+              </p>
             </div>
 
-            {/* Coluna 3: Políticas */}
-            <div>
-              <h4
-                className="font-semibold uppercase tracking-wider"
-                style={{ color: styles.title }}
-              >
-                Políticas
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {policyLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-sm hover:underline"
-                      style={{ color: styles.links }}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* --- SECÇÃO 2: BARRA INFERIOR (COPYRIGHT E PAGAMENTO) --- */}
-      <div style={{ backgroundColor: styles.bottomBarBg }}>
-        <div className="mx-auto max-w-7xl px-6 py-6 lg:px-8">
-          <div className="flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
-            {/* Copyright */}
-            <p className="text-sm" style={{ color: styles.bottomBarText }}>
-              © {new Date().getFullYear()} Cajuia Store. Todos os direitos
-              reservados.
-            </p>
-            {/* Ícones de Pagamento */}
-            <div
-              className="flex items-center gap-3"
-              style={{ color: styles.bottomBarText }}
-            >
-              <VisaIcon />
-              <MastercardIcon />
-              <PixIcon />
-              {/* Adicione outros ícones de pagamento (Elo, Amex) aqui */}
+            {/* Direita: Imagem de Ícones de Pagamento */}
+            <div className="flex items-center justify-center sm:justify-end">
+              <Image
+                src="/bandeiraspagamento.png"
+                alt="Formas de Pagamento Aceitas"
+                width={200} // Ajuste conforme necessário
+                height={30} // Ajuste conforme necessário
+                className="h-auto w-auto max-h-20" // <--- Aumentado para 40px max
+              />
             </div>
           </div>
         </div>

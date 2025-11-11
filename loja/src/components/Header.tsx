@@ -1,4 +1,4 @@
-// ARQUIVO: src/components/Header.tsx (CORRIGIDO com Cores e Espaçamento)
+// ARQUIVO: src/components/Header.tsx (Atualizado com Efeitos de Hover)
 'use client'
 
 import { useCartStore } from '@/store/cartStore'
@@ -48,40 +48,46 @@ export default function Header() {
   const toggleCart = useCartStore((state) => state.toggleCart)
 
   const [itemCount, setItemCount] = useState(0)
+  const [wishlistCount, setWishlistCount] = useState(4) // Exemplo
+
   useEffect(() => {
     const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
     setItemCount(totalItems)
   }, [items])
 
   const navigationLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'Páginas', href: '/pages' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'INÍCIO', href: '/' },
+    { name: 'ATACADO', href: '/wholesale' },
+    { name: 'CATÁLOGO', href: '/catalog' },
+    { name: 'ENTRAR EM CONTATO', href: '/contact' },
+    { name: 'NOSSAS COLEÇÕES', href: '/collections' },
+    { name: 'RASTREAR PEDIDO', href: '/track-order' },
   ]
 
   // Paleta de Cores Base
   const styles = {
-    background: '#F7F3ED',
-    title: '#7A4E2D', // Cor dos links do menu
-    // Novas cores especificadas por si
+    background: '#FFF8F4',
     topBarBg: '#AC6231',
     topBarText: '#FFFFFF',
+    title: '#7A4E2D',
     icons: '#56362C',
+    badgeBg: '#7A4E2D',
+    badgeText: '#FFFFFF',
+    badgeBorder: '#FFF8F4',
   }
 
-  // Borda subtil (baseada na cor do título)
   const borderColor = 'rgba(122, 78, 45, 0.2)'
+  const strokeWidth = 2.5
 
   return (
     <header
-      className="sticky top-0 z-10 border-b" // Apenas UMA borda no fundo de TUDO
+      className="sticky top-0 z-10 border-b"
       style={{
         backgroundColor: styles.background,
         borderColor: borderColor,
       }}
     >
-      {/* 1. BARRA DE TOPO (Com cores exatas) */}
+      {/* 1. BARRA DE TOPO */}
       <div style={{ backgroundColor: styles.topBarBg }}>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-1.5 lg:px-8">
           <div className="flex-1 justify-start">
@@ -100,7 +106,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 2. BARRA MÉDIA (Logo e Ícones) - COM ESPAÇO (padding) */}
+      {/* 2. BARRA MÉDIA (Logo e Ícones) */}
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 pt-8 pb-5 lg:px-8">
         {/* Esquerda: Telefone ou Menu Mobile */}
         <div className="flex flex-1 justify-start">
@@ -116,7 +122,7 @@ export default function Header() {
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth="1.5"
+                strokeWidth={strokeWidth}
                 stroke="currentColor"
               >
                 <path
@@ -142,46 +148,81 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Direita: Ícones (Cor e espaçamento corrigidos) */}
+        {/* Direita: Ícones (com Efeito de Hover) */}
         <div
-          className="flex flex-1 items-center justify-end gap-x-2" // <-- POUCO ESPAÇO
-          style={{ color: styles.icons }} // <-- COR EXATA
+          className="flex flex-1 items-center justify-end gap-x-4"
+          style={{ color: styles.icons }}
         >
-          <button className="hidden lg:block p-2">
-            <MagnifyingGlassIcon className="h-5 w-5" />
+          {/* Lupa */}
+          <button
+            className="hidden lg:block p-2 relative rounded-full transition-colors duration-200 hover:bg-black/5" // <--- HOVER
+          >
+            <MagnifyingGlassIcon className="h-5 w-5" strokeWidth={strokeWidth} />
           </button>
-          <button className="hidden lg:block p-2">
-            <UserIcon className="h-5 w-5" />
+          {/* Usuário */}
+          <button
+            className="hidden lg:block p-2 relative rounded-full transition-colors duration-200 hover:bg-black/5" // <--- HOVER
+          >
+            <UserIcon className="h-5 w-5" strokeWidth={strokeWidth} />
           </button>
-          <button className="hidden lg:block p-2">
-            <HeartIcon className="h-5 w-5" />
+          {/* Heart/Wishlist */}
+          <button
+            className="hidden lg:block p-2 relative rounded-full transition-colors duration-200 hover:bg-black/5" // <--- HOVER
+          >
+            <HeartIcon className="h-5 w-5" strokeWidth={strokeWidth} />
+            {wishlistCount > 0 && (
+              <span
+                className="absolute -bottom-0.5 -right-0.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-xs font-bold"
+                style={{
+                  backgroundColor: styles.badgeBg,
+                  color: styles.badgeText,
+                  border: `1px solid ${styles.badgeBorder}`,
+                }}
+              >
+                {wishlistCount}
+              </span>
+            )}
           </button>
-          {/* Carrinho */}
+          {/* Carrinho de Compras */}
           <button
             onClick={toggleCart}
-            className="group -m-2 flex items-center p-2"
+            className="group flex items-center p-2 relative rounded-full transition-colors duration-200 hover:bg-black/5" // <--- HOVER
           >
-            <ShoppingBagIcon className="h-5 w-5 flex-shrink-0" />
-            <span
-              className="ml-1 text-sm font-medium"
-              style={{ color: styles.title }} // Cor do número (diferente dos ícones)
-            >
-              {itemCount}
-            </span>
+            <ShoppingBagIcon
+              className="h-5 w-5 flex-shrink-0"
+              strokeWidth={strokeWidth}
+            />
+            {itemCount > 0 && (
+              <span
+                className="absolute -bottom-0.5 -right-0.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-xs font-bold"
+                style={{
+                  backgroundColor: styles.badgeBg,
+                  color: styles.badgeText,
+                  border: `1px solid ${styles.badgeBorder}`,
+                }}
+              >
+                {itemCount}
+              </span>
+            )}
           </button>
         </div>
       </div>
 
-      {/* 3. BARRA INFERIOR (Navegação) - BEM ESPAÇADA */}
-      <div className="mx-auto hidden max-w-7xl justify-center px-6 pb-6 lg:flex lg:gap-x-16">
+      {/* 3. BARRA INFERIOR (Navegação com Efeito de Hover) */}
+      <div className="mx-auto hidden max-w-7xl justify-center px-6 pb-4 lg:flex lg:gap-x-16">
         {navigationLinks.map((link) => (
           <Link
             key={link.name}
             href={link.href}
-            className="pt-1 pb-2 text-sm font-medium uppercase tracking-wide"
+            className="relative group pt-1 pb-4 text-sm font-medium uppercase tracking-wide" // 1. Adiciona 'relative group' e 'pb-4'
             style={{ color: styles.title }}
           >
             {link.name}
+            {/* 2. A LINHA DE HOVER */}
+            <span
+              className="absolute bottom-2 left-0 h-[2px] w-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-center"
+              style={{ backgroundColor: styles.title }}
+            ></span>
           </Link>
         ))}
       </div>

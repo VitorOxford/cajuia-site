@@ -1,4 +1,3 @@
-// ARQUIVO: src/components/BannerCarousel.tsx
 'use client'
 
 import React, { useCallback } from 'react'
@@ -8,17 +7,15 @@ import Image from 'next/image'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
 type BannerCarouselProps = {
-  images: string[] // Array de URLs das imagens
+  images: string[]
 }
 
 export default function BannerCarousel({ images }: BannerCarouselProps) {
-  // Configurações do Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, skipSnaps: false }, // loop infinito, sem pular snaps
-    [Autoplay({ delay: 5000, stopOnInteraction: false })] // Autoplay a cada 5 segundos, não para ao interagir
+    { loop: true }, // Ativa o loop
+    [Autoplay({ delay: 5000, stopOnInteraction: false })] // Plugin de Autoplay
   )
 
-  // Funções para navegar com as setas
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
   }, [emblaApi])
@@ -27,28 +24,39 @@ export default function BannerCarousel({ images }: BannerCarouselProps) {
     if (emblaApi) emblaApi.scrollNext()
   }, [emblaApi])
 
-  // Estilos da paleta para as setas (pode ajustar)
   const styles = {
-    arrowColor: '#56362C', // Cor dos ícones das setas
-    arrowBg: 'rgba(255, 255, 255, 0.7)', // Fundo sutil das setas
+    arrowColor: '#56362C',
+    arrowBg: 'rgba(255, 255, 255, 0.7)',
   }
 
   return (
-    <div className="relative overflow-hidden w-full max-w-[1920px] mx-auto">
-      <div className="embla__viewport" ref={emblaRef}>
-        <div className="embla__container flex">
+    // 1. Container principal com largura total
+    <div className="relative w-full">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex">
           {images.map((src, index) => (
-            <div className="embla__slide flex-shrink-0 flex-grow-0 basis-full" key={index}>
-              <Image
-                src={src}
-                alt={`Banner ${index + 1}`}
-                width={1920} // Largura original
-                height={800} // Altura original
-                layout="responsive" // Garante que a imagem seja responsiva
-                objectFit="cover" // Corta a imagem para cobrir a área se necessário
-                priority={index === 0} // Carrega o primeiro banner com prioridade
-                className="w-full h-auto" // Para Next.js 13+ com layout="responsive"
-              />
+            <div
+              className="relative flex-shrink-0 flex-grow-0 basis-full"
+              key={index}
+            >
+              {/* 2. Div de "aspect-ratio" (1920x800) 
+                   (800 / 1920) * 100 = 41.666%
+                   Isto força a altura correta do container.
+              */}
+              <div
+                className="relative w-full"
+                style={{ paddingTop: '41.666%' }}
+              >
+                {/* 3. Imagem com 'fill' e 'objectFit: contain' */}
+                <Image
+                  src={src}
+                  alt={`Banner ${index + 1}`}
+                  fill
+                  style={{ objectFit: 'contain' }} // <--- ADAPTAR (sem cortes)
+                  priority={index === 0} // Carrega a primeira imagem mais rápido
+                  sizes="100vw" // Informa o Next.js que a imagem ocupa 100% da largura
+                />
+              </div>
             </div>
           ))}
         </div>
