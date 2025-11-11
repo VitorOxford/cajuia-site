@@ -1,12 +1,16 @@
-// ARQUIVO: src/app/layout.tsx (Atualizado)
+// ARQUIVO: src/app/layout.tsx (Atualizado para incluir o Footer)
 
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Josefin_Sans } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
-import CartDrawer from '@/components/CartDrawer' // <--- 1. IMPORTE O DRAWER
+import CartDrawer from '@/components/CartDrawer'
+import Footer from '@/components/Footer' // <--- 1. IMPORTE O FOOTER
 
-const inter = Inter({ subsets: ['latin'] })
+const josefin = Josefin_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+})
 
 export const metadata: Metadata = {
   title: 'Cajuia Store',
@@ -20,15 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={josefin.className}>
         <div className="flex min-h-screen flex-col">
-          
           <Header />
-          <CartDrawer /> {/* <--- 2. ADICIONE O DRAWER AQUI */}
-          
+          <CartDrawer />
+
           <main className="flex-grow">{children}</main>
-          
-          {/* Footer */}
+
+          <Footer /> {/* <--- 2. ADICIONE O FOOTER AQUI */}
         </div>
       </body>
     </html>

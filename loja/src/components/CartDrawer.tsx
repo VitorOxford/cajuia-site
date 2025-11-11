@@ -1,4 +1,4 @@
-// ARQUIVO: src/components/CartDrawer.tsx
+// ARQUIVO: src/components/CartDrawer.tsx (Atualizado com updateQuantity e Estilo)
 'use client'
 
 import { Fragment } from 'react'
@@ -17,18 +17,28 @@ function formatPrice(price: number) {
 }
 
 export default function CartDrawer() {
-  // Pega o estado e a ação de "abrir/fechar" do nosso store
   const isCartOpen = useCartStore((state) => state.isCartOpen)
   const toggleCart = useCartStore((state) => state.toggleCart)
   const items = useCartStore((state) => state.items)
-  
-  // Calcula o subtotal
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const removeItem = useCartStore((state) => state.removeItem)
+  const updateQuantity = useCartStore((state) => state.updateQuantity) // <--- 1. IMPORTA A AÇÃO
+
+  const subtotal = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  )
+
+  const handleQuantityChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    variantId: number
+  ) => {
+    const newQuantity = parseInt(e.target.value, 10)
+    updateQuantity(variantId, newQuantity) // <--- 2. CHAMA A AÇÃO
+  }
 
   return (
     <Transition.Root show={isCartOpen} as={Fragment}>
       <Dialog as="div" className="relative z-20" onClose={toggleCart}>
-        
         {/* Overlay (fundo escuro) */}
         <Transition.Child
           as={Fragment}
@@ -55,20 +65,29 @@ export default function CartDrawer() {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
+                {/* --- 3. APLICA AS CORES DA PALETA --- */}
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                    
-                    {/* Header do Carrinho (Título e Botão Fechar) */}
+                  {/* BG do Fundo (F7F3ED) */}
+                  <div
+                    className="flex h-full flex-col overflow-y-scroll shadow-xl"
+                    style={{ backgroundColor: '#F7F3ED' }}
+                  >
+                    {/* Header do Carrinho */}
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
-                        <Dialog.Title className="text-lg font-medium text-gray-900">
+                        {/* Cor do Título (7A4E2D) */}
+                        <Dialog.Title
+                          className="text-lg font-medium"
+                          style={{ color: '#7A4E2D' }}
+                        >
                           Carrinho de Compras
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
                             type="button"
-                            className="-m-2 p-2 text-gray-400 hover:text-gray-500"
+                            className="-m-2 p-2"
                             onClick={toggleCart} // Ação de fechar
+                            style={{ color: '#304D45' }} // Cor Subtítulo
                           >
                             <XMarkIcon className="h-6 w-6" />
                           </button>
@@ -79,7 +98,10 @@ export default function CartDrawer() {
                       <div className="mt-8">
                         <div className="flow-root">
                           {items.length === 0 ? (
-                            <p className="text-center text-gray-500">
+                            <p
+                              className="text-center"
+                              style={{ color: '#304D45' }}
+                            >
                               Seu carrinho está vazio.
                             </p>
                           ) : (
@@ -97,22 +119,71 @@ export default function CartDrawer() {
                                   </div>
                                   <div className="ml-4 flex flex-1 flex-col">
                                     <div>
-                                      <div className="flex justify-between text-base font-medium text-gray-900">
-                                        <h3>
-                                          <Link href={`/produtos/${item.handle}`} onClick={toggleCart}>
+                                      <div className="flex justify-between text-base font-medium">
+                                        <h3 style={{ color: '#7A4E2D' }}>
+                                          <Link
+                                            href={`/produtos/${item.handle}`}
+                                            onClick={toggleCart}
+                                          >
                                             {item.title}
                                           </Link>
                                         </h3>
-                                        <p className="ml-4">{formatPrice(item.price * item.quantity)}</p>
+                                        <p
+                                          className="ml-4"
+                                          style={{ color: '#304D45' }}
+                                        >
+                                          {formatPrice(
+                                            item.price * item.quantity
+                                          )}
+                                        </p>
                                       </div>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
-                                      <p className="text-gray-500">Qtd: {item.quantity}</p>
+                                      {/* --- 4. SELETOR DE QUANTIDADE --- */}
+                                      <div className="flex items-center">
+                                        <label
+                                          htmlFor={`quantity-${item.variantId}`}
+                                          className="mr-2 text-sm"
+                                          style={{ color: '#304D45' }}
+                                        >
+                                          Qtd:
+                                        </label>
+                                        <select
+                                          id={`quantity-${item.variantId}`}
+                                          name="quantity"
+                                          value={item.quantity}
+                                          onChange={(e) =>
+                                            handleQuantityChange(
+                                              e,
+                                              item.variantId
+                                            )
+                                          }
+                                          className="rounded border border-gray-300 py-1 px-2 text-sm"
+                                          style={{
+                                            backgroundColor: 'white',
+                                            color: '#304D45',
+                                          }}
+                                        >
+                                          {/* Criar 10 opções */}
+                                          {Array.from(
+                                            { length: 10 },
+                                            (_, i) => i + 1
+                                          ).map((qty) => (
+                                            <option key={qty} value={qty}>
+                                              {qty}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+
                                       <div className="flex">
                                         <button
                                           type="button"
-                                          className="font-medium text-indigo-600 hover:text-indigo-500"
-                                          // No futuro: onClick={() => removeItem(item.variantId)}
+                                          className="font-medium"
+                                          onClick={() =>
+                                            removeItem(item.variantId)
+                                          }
+                                          style={{ color: '#7A4E2D' }}
                                         >
                                           Remover
                                         </button>
@@ -130,28 +201,38 @@ export default function CartDrawer() {
                     {/* Footer do Carrinho (Subtotal e Checkout) */}
                     {items.length > 0 && (
                       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                        <div className="flex justify-between text-base font-medium text-gray-900">
-                          <p>Subtotal</p>
-                          <p>{formatPrice(subtotal)}</p>
+                        <div className="flex justify-between text-base font-medium">
+                          <p style={{ color: '#7A4E2D' }}>Subtotal</p>
+                          <p style={{ color: '#304D45' }}>
+                            {formatPrice(subtotal)}
+                          </p>
                         </div>
-                        <p className="mt-0.5 text-sm text-gray-500">
+                        <p
+                          className="mt-0.5 text-sm"
+                          style={{ color: '#304D45' }}
+                        >
                           Frete e taxas serão calculados no checkout.
                         </p>
                         <div className="mt-6">
                           <a
                             href="#" // No futuro: '/checkout'
-                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                            className="flex items-center justify-center rounded-md border border-transparent px-6 py-3 text-base font-medium shadow-sm"
+                            style={{
+                              backgroundColor: '#7A4E2D', // Cor Botão
+                              color: '#F7F3ED', // Cor Texto Botão
+                            }}
                           >
                             Finalizar Compra
                           </a>
                         </div>
-                        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                          <p>
+                        <div className="mt-6 flex justify-center text-center text-sm">
+                          <p style={{ color: '#304D45' }}>
                             ou{' '}
                             <button
                               type="button"
-                              className="font-medium text-indigo-600 hover:text-indigo-500"
+                              className="font-medium"
                               onClick={toggleCart} // Ação de fechar
+                              style={{ color: '#7A4E2D' }}
                             >
                               Continuar comprando
                             </button>
