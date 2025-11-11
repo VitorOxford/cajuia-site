@@ -1,36 +1,65 @@
-// ARQUIVO: src/components/ProductCard.tsx (NOVO FICHEIRO)
+// ARQUIVO: src/components/ProductCard.tsx (REFEITO)
 'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { HeartIcon } from '@heroicons/react/24/outline'
+import {
+  HeartIcon as HeartIconOutline,
+  MagnifyingGlassPlusIcon,
+  ShoppingBagIcon,
+} from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
+import { useState } from 'react'
 import type { Product } from '@/types'
 import { formatPrice, formatInstallments } from '@/lib/utils'
+import { useCartStore } from '@/store/cartStore' // Para o "Adicionar ao Carrinho"
 
 type ProductCardProps = {
   product: Product
+  onQuickViewClick: (product: Product) => void // Para o modal "Analisar"
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onQuickViewClick,
+}: ProductCardProps) {
+  const [isWishlisted, setIsWishlisted] = useState(false)
+  const addItemToCart = useCartStore((state) => state.addItem)
+
   // Cores da paleta
   const styles = {
     title: '#7A4E2D',
     text: '#56362C',
-    buttonBg: '#7A4E2D',
-    buttonText: '#FFF8F4',
+    buttonBg: '#FFF8F4',
+    buttonText: '#56362C',
   }
 
   // Pega a primeira variante e imagem
   const primaryVariant = product.product_variants[0]
   const primaryImage = product.product_images[0]
-
-  // Tenta encontrar uma segunda imagem para o hover (comum em temas Shopify)
   const secondaryImage = product.product_images[1] || primaryImage
+
+  // Função para "Adicionar ao Carrinho"
+  const handleAddToCart = () => {
+    // Adiciona a primeira variante disponível
+    addItemToCart({
+      variantId: primaryVariant.id || product.id, // Supabase pode não ter 'id' na variant, use 'product.id' como fallback
+      productId: product.id,
+      title: product.title,
+      handle: product.handle,
+      imageSrc: primaryImage.src,
+      price: primaryVariant.price,
+      quantity: 1,
+    })
+    // (Opcional: abrir o CartDrawer)
+    // useCartStore.getState().toggleCart()
+  }
 
   return (
     <div className="group relative text-left">
-      <div className="relative w-full aspect-[4/5] overflow-hidden rounded-md bg-gray-200">
-        {/* Imagem Principal (some no hover) */}
+      {/* 1. Container da Imagem (Bordas Retas) */}
+      <div className="relative w-full aspect-[4/5] overflow-hidden bg-gray-200">
+        {/* Imagem Principal */}
         <Image
           src={primaryImage.src}
           alt={product.title}
@@ -38,9 +67,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           style={{ objectFit: 'cover' }}
           className="h-full w-full transition-opacity duration-300 ease-in-out group-hover:opacity-0"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          priority // Opcional: carregar as primeiras imagens mais rápido
         />
-        {/* Imagem de Hover (aparece no hover) */}
+        {/* Imagem de Hover */}
         <Image
           src={secondaryImage.src}
           alt={product.title}
@@ -50,32 +78,51 @@ export default function ProductCard({ product }: ProductCardProps) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
 
-        {/* Botões de Hover (COMPRAR e Wishlist) */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        {/* 2. Botão Wishlist (Sempre Visível) */}
+        <button
+          onClick={() => setIsWishlisted(!isWishlisted)}
+          className="absolute top-2 right-2 z-20 p-2 rounded-full bg-white/70 backdrop-blur-sm transition-colors hover:bg-white"
+          style={{ color: styles.text }}
+          aria-label="Adicionar à wishlist"
+        >
+          {isWishlisted ? (
+            <HeartIconSolid className="h-5 w-5 text-red-500" />
+          ) : (
+            <HeartIconOutline className="h-5 w-5" />
+          )}
+        </button>
+
+        {/* 3. Botões de Hover (Analisar e Adicionar) */}
+        <div className="absolute bottom-0 z-10 flex w-full translate-y-full flex-col gap-0.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <button
-            className="py-2 px-5 text-sm font-medium transition-colors rounded-sm"
+            onClick={() => onQuickViewClick(product)}
+            className="flex w-full items-center justify-center gap-2 py-3 text-sm font-semibold uppercase"
             style={{
               backgroundColor: styles.buttonBg,
               color: styles.buttonText,
             }}
           >
-            COMPRAR
+            <MagnifyingGlassPlusIcon className="h-4 w-4" />
+            Analisar
           </button>
           <button
-            className="rounded-full bg-white p-2 shadow-md transition-colors hover:text-red-500"
-            style={{ color: styles.text }}
-            aria-label="Adicionar à wishlist"
+            onClick={handleAddToCart}
+            className="flex w-full items-center justify-center gap-2 py-3 text-sm font-semibold uppercase"
+            style={{
+              backgroundColor: styles.buttonBg,
+              color: styles.buttonText,
+            }}
           >
-            <HeartIcon className="h-5 w-5" />
+            <ShoppingBagIcon className="h-4 w-4" />
+            Adicionar ao carrinho
           </button>
         </div>
       </div>
 
-      {/* Conteúdo de Texto */}
+      {/* 4. Conteúdo de Texto */}
       <div className="mt-4">
         <h3 className="text-sm font-semibold" style={{ color: styles.text }}>
           <Link href={`/produtos/${product.handle}`}>
-            {/* O Link cobre todo o card para ser clicável */}
             <span aria-hidden="true" className="absolute inset-0" />
             {product.title}
           </Link>

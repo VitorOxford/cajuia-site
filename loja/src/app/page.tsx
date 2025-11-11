@@ -1,27 +1,22 @@
-// ARQUIVO: src/app/page.tsx (Atualizado com o novo ProductCarousel)
+// ARQUIVO: src/app/page.tsx (Atualizado)
 'use client'
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import type { Product } from '@/types'
 import BannerCarousel from '@/components/BannerCarousel'
-import ProductCarousel from '@/components/ProductCarousel' // <--- 1. IMPORTAR O NOVO CARROSSEL
-
-// A função 'formatPrice' foi removida daqui, pois foi movida
-// para 'src/lib/utils.ts' e é usada pelo 'ProductCard.tsx'
+import ProductCarousel from '@/components/ProductCarousel' // <--- Já estava importado
 
 export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Define as imagens do banner
   const bannerImages = [
-    '/banner1.jpg', // /loja/public/banner1.jpg
-    '/banner2.jpg', // /loja/public/banner2.jpg
-    '/banner3.jpg', // /loja/public/banner3.jpg
+    '/banner1.jpg',
+    '/banner2.jpg',
+    '/banner3.jpg',
   ]
 
-  // Lógica de carregamento de produtos (do seu código)
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true)
@@ -32,7 +27,7 @@ export default function HomePage() {
         .select(
           `
           id, title, handle, description_html, vendor,
-          product_variants!left(price, compare_at_price),
+          product_variants!left(id, price, compare_at_price),
           product_images!left(src)
         `
         )
@@ -62,12 +57,9 @@ export default function HomePage() {
     return (
       <main
         className="flex min-h-screen items-center justify-center"
-        style={{ backgroundColor: '#FFF8F4' }} // Cor de fundo
+        style={{ backgroundColor: '#FFF8F4' }}
       >
-        <h1
-          className="text-3xl font-bold"
-          style={{ color: '#7A4E2D' }} // Cor do título
-        >
+        <h1 className="text-3xl font-bold" style={{ color: '#7A4E2D' }}>
           Carregando...
         </h1>
       </main>
@@ -77,25 +69,20 @@ export default function HomePage() {
   // Página completa
   return (
     <main style={{ backgroundColor: '#FFF8F4' }}>
-      {/* 1. O BANNER FICA AQUI (LARGURA TOTAL) */}
+      {/* 1. Banner (Largura Total) */}
       <BannerCarousel images={bannerImages} />
 
-      {/* 2. SUBSTITUI A GRELHA ANTIGA PELO NOVO CARROSSEL DE PRODUTOS */}
-      {products.length > 0 ? (
-        <ProductCarousel products={products} title="Produtos em Destaque" />
-      ) : (
-        // Mensagem de "Nenhum produto" se o array estiver vazio
-        <div className="mx-auto max-w-7xl px-6 py-24 text-center">
-          <h2 className="text-2xl font-medium" style={{ color: '#7A4E2D' }}>
-            Nenhum produto encontrado.
-          </h2>
-        </div>
+      {/* 2. Carrossel de Produtos "Coleção de Outono" */}
+      {products.length > 0 && (
+        <ProductCarousel
+          products={products}
+          title="Coleção de Outono"
+          subtitle="Confira nossa coleção de vestidos com estampas exclusivas para o Outono"
+          viewMoreLink="/collections/outono" // Ajuste este link se necessário
+        />
       )}
 
-      {/* A grelha de produtos antiga (<div className="grid grid-cols-1...">) 
-        e o título "Cajuia do Brasil" foram removidos, 
-        pois o <ProductCarousel /> já contém o seu próprio título e layout.
-      */}
+      {/* Pode adicionar mais secções/carrosseis aqui */}
     </main>
   )
 }
